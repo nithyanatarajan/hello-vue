@@ -1,14 +1,6 @@
 # hello-vue
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+[![CI/CD Pipeline](https://github.com/nithyanatarajan/hello-vue/actions/workflows/ci.yml/badge.svg)](https://github.com/nithyanatarajan/hello-vue/actions/workflows/ci.yml)
 
 ## Project Setup
 
@@ -37,7 +29,21 @@ npm run test:unit
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
+# To check for linting errors
 npm run lint
+
+# To fix linting errors
+npm run lint:fix
+```
+
+### Format with [Prettier](https://prettier.io/)
+
+```sh
+# To check for formatting errors
+npm run format
+
+# To fix formatting errors
+npm run format:fix
 ```
 
 ### Git Hooks with [Lefthook](https://github.com/evilmartians/lefthook)
