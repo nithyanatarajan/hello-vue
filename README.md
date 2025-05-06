@@ -39,3 +39,16 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+### Git Hooks with [Lefthook](https://github.com/evilmartians/lefthook)
+
+This project uses Lefthook to manage Git hooks. Lefthook will automatically:
+- Run format and lint checks before push
+
+Lefthook should be automatically installed when you run `npm install`. If you need to manually install the git hooks, run:
+
+```sh
+npm run lefthook:install
+```
+
+If you're experiencing issues with changes not being staged or committed properly, ensure that Lefthook is installed correctly by running the above command.
