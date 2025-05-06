@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "test": "vitest --run",
     "test:unit": "vitest",
-    "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check src/",
+    "format:fix": "prettier --write src/"
   },
   "dependencies": {
     "pinia": "^3.0.1",
