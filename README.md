@@ -46,6 +46,17 @@ npm run format
 npm run format:fix
 ```
 
+### Environment Variables
+
+This project uses environment variables for configuration. Copy the `.env.example` file to a new file named `.env` and update the values as needed:
+
+```sh
+cp .env.example .env
+```
+
+Required environment variables:
+- `VITE_HOST_API`: The base URL for the API (e.g., http://localhost:3000)
+
 ### Git Hooks with [Lefthook](https://github.com/evilmartians/lefthook)
 
 This project uses Lefthook to manage Git hooks. Lefthook will automatically:
