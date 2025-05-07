@@ -72,4 +72,88 @@ describe('EventService', () => {
       });
     });
   });
+
+  describe('getEventById', () => {
+    it('should return event given id', async () => {
+      // Arrange
+      const eventId = 123;
+      const mockData = { id: eventId, title: 'Event' };
+      mock.onGet(`/events/${eventId}`).reply(200, mockData);
+
+      // Act
+      const result = await EventService.getEventById(eventId);
+
+      // Assert
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should return 404 when id does not exist', async () => {
+      // Arrange
+      const eventId = 999;
+      const errorMessage = { message: 'Event not found' };
+      mock.onGet(`/events/${eventId}`).reply(404, errorMessage);
+
+      // Act & Assert
+      await expect(EventService.getEventById(eventId)).rejects.toMatchObject({
+        response: {
+          status: 404,
+          data: errorMessage,
+        },
+      });
+    });
+
+    it('should handle 500 server error', async () => {
+      // Arrange
+      const eventId = 123;
+      const errorMessage = { message: 'Internal server error' };
+      mock.onGet(`/events/${eventId}`).reply(500, errorMessage);
+
+      // Act & Assert
+      await expect(EventService.getEventById(eventId)).rejects.toMatchObject({
+        response: {
+          status: 500,
+          data: errorMessage,
+        },
+      });
+    });
+
+    it('should handle network error', async () => {
+      // Arrange
+      const eventId = 123;
+      mock.onGet(`/events/${eventId}`).networkError();
+
+      // Act & Assert
+      await expect(EventService.getEventById(eventId)).rejects.toMatchObject({
+        message: 'Network Error',
+      });
+    });
+
+    it('should handle invalid eventId input', async () => {
+      // Test with undefined eventId
+      // Arrange
+      const undefinedEventId = undefined;
+
+      // Act & Assert
+      try {
+        await EventService.getEventById(undefinedEventId);
+        // If we reach this point, the test should fail
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+
+      // Test with null eventId
+      // Arrange
+      const nullEventId = null;
+
+      // Act & Assert
+      try {
+        await EventService.getEventById(nullEventId);
+        // If we reach this point, the test should fail
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
+    });
+  });
 });
