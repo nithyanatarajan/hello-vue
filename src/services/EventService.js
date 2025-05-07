@@ -1,15 +1,5 @@
-import axios from 'axios';
-
-const getApiClient = () =>
-  axios.create({
-    baseURL: import.meta.env.VITE_HOST_API,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    withCredentials: false,
-  });
+import apiClient from './apiClient';
 
 export default {
-  getEvents: () => getApiClient().get('/events'),
+  getEvents: () => apiClient.get('/events'),
 };

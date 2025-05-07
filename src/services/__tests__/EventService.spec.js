@@ -1,58 +1,75 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import MockAdapter from 'axios-mock-adapter';
 import EventService from '@/services/EventService.js';
-
-// Mock the axios module
-vi.mock('axios', () => ({
-  default: {
-    create: vi.fn(() => ({
-      get: vi.fn(),
-    })),
-  },
-}));
+import apiClient from '@/services/apiClient.js';
 
 describe('EventService', () => {
-  const mockResponse = {
-    data: [
-      { id: 1, title: 'Event 1' },
-      { id: 2, title: 'Event 2' },
-    ],
-  };
-
-  const mockAxiosClient = {
-    get: vi.fn(),
-  };
+  let mock;
 
   beforeEach(() => {
-    // Reset mocks before each test
+    // Create a new instance of axios-mock-adapter for the apiClient
+    mock = new MockAdapter(apiClient);
     vi.clearAllMocks();
+  });
 
-    // Setup axios.create to return mockAxiosClient
-    axios.create.mockReturnValue(mockAxiosClient);
-
-    // Setup get to the mock response
-    mockAxiosClient.get.mockResolvedValue(mockResponse);
+  afterEach(() => {
+    // Reset the mock adapter
+    mock.reset();
+    vi.resetAllMocks();
   });
 
   describe('getEvents', () => {
-    it('calls axios with the correct endpoint', async () => {
-      // Call the method
-      await EventService.getEvents();
+    it('should return events', async () => {
+      // Arrange
+      const mockData = [
+        { id: 1, title: 'Event 1' },
+        { id: 2, title: 'Event 2' },
+      ];
+      mock.onGet('/events').reply(200, mockData);
 
-      // Assert that axios.create was called
-      expect(axios.create).toHaveBeenCalledTimes(1);
-
-      // Assert that the get method was called with the correct endpoint
-      expect(mockAxiosClient.get).toHaveBeenCalledTimes(1);
-      expect(mockAxiosClient.get).toHaveBeenCalledWith('/events');
-    });
-
-    it('returns the data from the API call', async () => {
-      // Call the method
+      // Act
       const result = await EventService.getEvents();
 
-      // Assert that the method returns the data from the API call
-      expect(result).toEqual(mockResponse);
+      // Assert
+      expect(result.data).toEqual(mockData);
+    });
+
+    it('should handle 404 error when events endpoint is not found', async () => {
+      // Arrange
+      const errorMessage = { message: 'Events not found' };
+      mock.onGet('/events').reply(404, errorMessage);
+
+      // Act & Assert
+      await expect(EventService.getEvents()).rejects.toMatchObject({
+        response: {
+          status: 404,
+          data: errorMessage,
+        },
+      });
+    });
+
+    it('should handle 500 server error', async () => {
+      // Arrange
+      const errorMessage = { message: 'Internal server error' };
+      mock.onGet('/events').reply(500, errorMessage);
+
+      // Act & Assert
+      await expect(EventService.getEvents()).rejects.toMatchObject({
+        response: {
+          status: 500,
+          data: errorMessage,
+        },
+      });
+    });
+
+    it('should handle network error', async () => {
+      // Arrange
+      mock.onGet('/events').networkError();
+
+      // Act & Assert
+      await expect(EventService.getEvents()).rejects.toMatchObject({
+        message: 'Network Error',
+      });
     });
   });
 });
