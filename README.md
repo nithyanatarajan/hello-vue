@@ -69,3 +69,15 @@ npm run lefthook:install
 ```
 
 If you're experiencing issues with changes not being staged or committed properly, ensure that Lefthook is installed correctly by running the above command.
+
+### Docker Setup
+
+```sh
+docker build \
+  --build-arg VITE_HOST_API=https://my-json-server.typicode.com/Code-Pop/Real-World_Vue-3 \
+  -t vue-app:latest .
+
+docker run -p 8080:80 vue-app:latest
+
+# open http://localhost:8080 in your browser
+```
